@@ -1,0 +1,608 @@
+# **RPA STANDARDS DOCUMENTATION**
+
+## **1. General RPA Development Standards**
+
+### **Development Principles**
+```
+1. REUSABILITY: Create reusable components and libraries
+2. MAINTAINABILITY: Clear naming, documentation, comments
+3. SCALABILITY: Design for future expansion
+4. SECURITY: Never hardcode credentials
+5. ROBUSTNESS: Comprehensive error handling
+6. PERFORMANCE: Optimize loops and data handling
+```
+
+### **File Structure Standard**
+```
+Project/
+├── Main/
+│   ├── Main.xaml / Main.process
+│   ├── Config.json / Config.xlsx
+│   └── Framework/
+├── Libraries/
+│   ├── CommonUtilities/
+│   ├── DataHandlers/
+│   └── UI_Components/
+├── Tests/
+│   ├── UnitTests/
+│   ├── IntegrationTests/
+│   └── TestData/
+├── Documentation/
+│   ├── TechnicalDesign.docx
+│   ├── ProcessMap.vsdx
+│   └── Runbook.docx
+└── Deployment/
+    ├── Packages/
+    ├── EnvironmentConfigs/
+    └── DeploymentChecklist.md
+```
+
+## **2. Tool-Specific Standards**
+
+### **UiPath Standards**
+```yaml
+# UiPath Studio/StudioX Standards v3.0
+Project Structure:
+  - Use State Machine for business processes
+  - Use Flowchart for simple automations
+  - Use Sequence for linear tasks
+
+Naming Convention:
+  - Workflows: {ProcessName}_{WorkflowType}_{Version}
+  - Variables: camelCase (totalAmount, invoiceDate)
+  - Arguments: Input_{Name}, Output_{Name}, InOut_{Name}
+  - Controls: {ElementType}_{Purpose}_{Identifier}
+
+Error Handling:
+  - Implement REFrameWork for production processes
+  - Use Global Exception Handler
+  - Log to Orchestrator + Local Logging
+
+Settings:
+  - Project.json: Maintain environment variables
+  - Timeouts: Default 30s, configurable per activity
+  - Retry: 3 attempts with exponential backoff
+```
+
+### **Blue Prism Standards**
+```yaml
+# Blue Prism Development Standards v2.1
+Object Layer:
+  - Business Objects: BO_{Process}_{Function}
+  - Application Models: AM_{AppName}_{Version}
+  - Actions: Descriptive verb-noun pairs
+
+Process Layer:
+  - Main Page: Initialize and setup
+  - Process Pages: One business function per page
+  - Cleanup Page: Resource release
+
+Data Items:
+  - Input/Output: Prefix with "I_" or "O_"
+  - Internal: camelCase naming
+  - Collections: Plural names (invoices, customers)
+
+Error Management:
+  - Exception Bubbling to Control Room
+  - Business Exceptions vs System Exceptions
+  - Recovery stages for resume capability
+```
+
+### **Power Automate Standards**
+```yaml
+# Power Automate Standards v2.0
+Flow Types:
+  - Cloud Flows: For API-based automations
+  - Desktop Flows: For UI automation
+  - Business Process Flows: For guided processes
+
+Naming:
+  - Flows: {Env}_{Process}_{Trigger}_{Date}
+  - Variables: Init with scope prefix (local_, outputs_)
+  - Connections: {Env}_{Service}_{Purpose}
+
+Error Handling:
+  - Configure Run After settings
+  - Use Scope actions for try-catch
+  - Send failure notifications
+  - Implement retry policies
+
+Performance:
+  - Batch processing for >100 items
+  - Use selective column retrieval
+  - Optimize trigger frequency
+```
+
+## **3. Security Standards**
+```markdown
+# Security Protocol v4.0
+
+## Credential Management
+- Use Credential Manager (UiPath Orchestrator/Blue Prism Credentials)
+- Never store in config files
+- Rotate every 90 days
+
+## Data Handling
+- PII Data: Mask in logs
+- Payment Data: PCI-DSS compliance
+- Local Storage: Encrypt sensitive data
+
+## Access Control
+- Principle of Least Privilege
+- RBAC implementation
+- Audit logging for all access
+
+## Network Security
+- VPN for on-premises connections
+- Firewall rules for bot runners
+- TLS 1.2+ for all communications
+```
+
+---
+
+# **TESTING FRAMEWORK DOCUMENTATION**
+
+## **1. RPA Testing Framework v3.0**
+
+### **Testing Pyramid**
+```
+               ┌─────────────────┐
+               │  End-to-End     │
+               │  Tests (5-10%)  │
+               └─────────────────┘
+                      ┌────────────┐
+                      │ Integration│
+                      │ Tests(15%) │
+                      └────────────┘
+                            ┌────────────────┐
+                            │   Unit Tests   │
+                            │    (70-80%)    │
+                            └────────────────┘
+```
+
+### **Test Case Template**
+```yaml
+Test Case ID: {Process}_{TestType}_{Number}
+Description: [Clear test objective]
+Priority: P0/P1/P2/P3
+Pre-conditions: [Setup required]
+Test Data: [Input data reference]
+
+Test Steps:
+  1. [Step 1]
+  2. [Step 2]
+  3. [Step 3]
+
+Expected Results:
+  - [Result 1]
+  - [Result 2]
+  - [Result 3]
+
+Actual Results: [To be filled during execution]
+Status: Pass/Fail/Blocked
+Defect ID: [If applicable]
+Test Environment: DEV/UAT/PROD
+Execution Date: [DD-MM-YYYY]
+Tester: [Name]
+```
+
+### **2. Tool-Specific Testing**
+
+#### **UiPath Test Suite**
+```markdown
+## Unit Testing Framework
+- Use Test Manager for test cases
+- Arrange-Act-Assert pattern
+- Data-driven testing using Excel/DB
+
+### Test Categories:
+1. Component Tests:
+   - Individual activity validation
+   - Custom component testing
+
+2. Workflow Tests:
+   - XAML workflow testing
+   - Argument validation
+
+3. Integration Tests:
+   - Orchestrator queue tests
+   - Asset validation tests
+
+## Test Automation:
+- Use UiPath Test Suite
+- ReFramework test cases
+- Cross-environment testing
+```
+
+#### **Blue Prism Test Framework**
+```markdown
+## Testing Methodology:
+1. Object Testing:
+   - Application model verification
+   - Action validation
+   - Wait stage testing
+
+2. Process Testing:
+   - Page-by-page validation
+   - Data item flow testing
+   - Exception path testing
+
+3. System Testing:
+   - Control Room integration
+   - Resource scheduler tests
+   - Runtime validation
+
+## Test Data Management:
+- Use Blue Prism data queues
+- Environment-specific test data
+- Mock services for external systems
+```
+
+#### **Power Automate Testing**
+```markdown
+## Testing Approach:
+1. Flow Testing:
+   - Trigger validation
+   - Action sequence testing
+   - Condition branch testing
+
+2. Connector Testing:
+   - API response handling
+   - Authentication testing
+   - Rate limit testing
+
+3. Performance Testing:
+   - Flow run duration
+   - Concurrent execution
+   - Data volume testing
+
+## Test Tools:
+- Power Automate Test Harness
+- Manual trigger testing
+- Monitor analytics validation
+```
+
+### **3. Test Data Management**
+```yaml
+Test Data Strategy:
+  Production-like Data: 
+    - Masked production data
+    - Similar volume and variety
+
+  Boundary Data:
+    - Minimum values
+    - Maximum values
+    - Null/empty values
+    - Special characters
+
+  Error Data:
+    - Invalid formats
+    - Missing required fields
+    - Duplicate data
+    - Corrupted files
+
+Data Refresh: Monthly for UAT, Quarterly for DEV
+Data Masking: Required for PII in non-PROD
+```
+
+### **4. Regression Test Suite**
+```markdown
+## Critical Path Tests (Execute Every Deployment)
+1. Login/Authentication
+2. Core business process
+3. Error handling workflows
+4. Data export/import
+5. Notification systems
+
+## Smoke Tests (Daily Execution)
+- Environment connectivity
+- Credential validation
+- Basic happy path
+- Log generation
+
+## Performance Tests (Monthly)
+- Response time under load
+- Memory usage monitoring
+- Concurrent execution
+- Recovery time testing
+```
+
+### **5. Defect Management**
+```markdown
+## Defect Classification:
+Severity Levels:
+  S1 - Critical: Process failure, data loss
+  S2 - High: Workaround exists but impacts business
+  S3 - Medium: Minor functional issue
+  S4 - Low: Cosmetic/UI issues
+
+Priority Levels:
+  P1 - Fix immediately
+  P2 - Fix in next release
+  P3 - Fix when possible
+  P4 - Future enhancement
+
+## Defect Lifecycle:
+New → Assigned → In Progress → Fixed → Verified → Closed
+```
+
+---
+
+# **NAMING CONVENTION GUIDES**
+
+## **1. Universal Naming Standards**
+
+### **Core Principles**
+```
+1. CLARITY: Names should be self-explanatory
+2. CONSISTENCY: Follow same pattern across projects
+3. BREVITY: Avoid overly long names
+4. CONTEXT: Include scope/type indicators
+5. LANGUAGE: Use US English only
+```
+
+### **Character Rules**
+```
+Allowed: A-Z, a-z, 0-9, underscore (_)
+Not Allowed: Spaces, special characters (@#$%&*)
+Case: camelCase for variables, PascalCase for workflows
+Length: Max 50 characters for readability
+```
+
+## **2. Component Naming Convention**
+
+### **Workflows/Processes**
+```
+Pattern: {Process}_{Function}_{Type}_{Version}
+Examples:
+  - InvoiceProcessing_Main_Sequence_v1.0
+  - DataMigration_Extract_Flowchart_v2.1
+  - HROnboarding_Validation_StateMachine_v1.5
+
+Type Indicators:
+  - SM: State Machine
+  - SEQ: Sequence
+  - FC: Flowchart
+  - PROC: Process (Blue Prism)
+  - OBJ: Object (Blue Prism)
+```
+
+### **Variables & Arguments**
+```markdown
+## Variable Naming:
+Pattern: {scope}{dataType}{Description}
+
+Scope Prefixes:
+  - local_ : Local variable
+  - global_ : Global variable
+  - arg_ : Argument
+  - config_ : Configuration
+
+Data Type Indicators:
+  - str: String
+  - int: Integer
+  - dbl: Double
+  - dt: DateTime
+  - bool: Boolean
+  - arr: Array
+  - dtTable: DataTable
+  - dict: Dictionary
+
+Examples:
+  - local_strCustomerName
+  - arg_intInvoiceNumber
+  - global_dtLastRunDate
+  - config_strDatabaseConnection
+```
+
+### **UI Elements & Selectors**
+```
+Pattern: {App}_{Window}_{Control}_{Action}
+
+Examples:
+  - SAP_MainWindow_TextField_CustomerID
+  - Chrome_Browser_Div_SearchResults
+  - Excel_Worksheet_Cell_Amount
+
+Attributes:
+  - Use 'idx' for index: Button_Submit_idx2
+  - Use 'clr' for class: Div_Results_clrRow
+  - Use 'val' for value: Input_Search_valDefault
+```
+
+## **3. Tool-Specific Naming**
+
+### **UiPath Naming Convention**
+```yaml
+# PROJECT LEVEL
+Project Name: {Department}_{Process}_{Env}
+  Example: Finance_APAutomation_DEV
+
+# WORKFLOWS
+Main Workflow: Main_{ProcessName}.xaml
+Reusable: Lib_{FunctionName}.xaml
+Exception Handler: EH_{ExceptionType}.xaml
+
+# ACTIVITIES
+TryCatch: tc_{Purpose}
+ForEach: fe_{ItemType}
+If: if_{Condition}
+Switch: sw_{VariableName}
+
+# ARGUMENTS
+Direction_Prefix:
+  - in_str: Input String
+  - out_int: Output Integer
+  - io_dt: InOut DateTime
+  - prop_str: Property String
+```
+
+### **Blue Prism Naming Convention**
+```yaml
+# BUSINESS OBJECTS
+BO_{Application}_{Function}
+  Example: BO_SAP_InvoiceCreate
+  Example: BO_WebService_GetData
+
+# APPLICATION MODELS
+AM_{App}_{Version}_{Environment}
+  Example: AM_Excel_2016_UAT
+  Example: AM_Chrome_v89_PROD
+
+# ACTIONS (Verb-Noun)
+- LoginToApplication
+- ExtractTableData
+- ValidateCustomerDetails
+- GenerateReportFile
+
+# DATA ITEMS
+Collection: col{ItemType}
+  Example: colInvoices, colCustomers
+
+Single Item: {type}{Description}
+  Example: strCustomerCode, dtProcessDate
+```
+
+### **Power Automate Naming**
+```yaml
+# FLOWS
+{Environment}_{Department}_{Process}_{Trigger}
+  Example: PROD_Finance_InvoiceProcess_Email
+  Example: DEV_HR_Onboarding_FormSubmit
+
+# CONNECTIONS
+{Env}_{Service}_{Purpose}
+  Example: UAT_SQL_DatabaseRead
+  Example: PROD_SharePoint_DocumentLibrary
+
+# VARIABLES
+Scope_DataType_Description:
+  - variables('local_strFileName')
+  - outputs('sql_GetData')?
+  - parameters('env_strConnectionString')
+```
+
+## **4. File & Folder Naming**
+
+### **Folder Structure**
+```
+{ProjectName}/
+├── 01_Documentation/
+│   ├── BRD_{Process}_v{Version}.docx
+│   └── PDD_{Process}_v{Version}.docx
+├── 02_Development/
+│   ├── Workflows/
+│   ├── Scripts/
+│   └── Configurations/
+├── 03_Testing/
+│   ├── TestCases/
+│   ├── TestData/
+│   └── TestResults/
+├── 04_Deployment/
+│   ├── Packages/
+│   ├── Runbooks/
+│   └── Checklists/
+└── 05_Support/
+    ├── Logs/
+    ├── Incidents/
+    └── KnowledgeBase/
+```
+
+### **File Naming Convention**
+```
+Pattern: {Type}_{Description}_{Date}_{Version}.{ext}
+
+Type Prefixes:
+  - CFG_: Configuration files
+  - LOG_: Log files
+  - TST_: Test files
+  - DOC_: Documentation
+  - SRC_: Source code
+  - PKG_: Deployment packages
+
+Examples:
+  - CFG_DatabaseSettings_20240115_v1.2.json
+  - LOG_InvoiceRun_20240115_1030.csv
+  - TST_Validation_TestData_v1.0.xlsx
+  - DOC_TechnicalDesign_v2.1.docx
+```
+
+## **5. Environment Naming**
+
+### **Environment Indicators**
+```
+Prefix/Suffix Conventions:
+  - DEV: Development
+  - TST: Testing
+  - UAT: User Acceptance Testing
+  - STG: Staging
+  - PROD: Production
+  - DR: Disaster Recovery
+
+Examples:
+  - Server-DB-DEV-01
+  - WebService-UAT
+  - FileShare-PROD
+  - ConnectionString-STG
+```
+
+## **6. Versioning Convention**
+
+### **Semantic Versioning**
+```
+Major.Minor.Patch
+  - MAJOR: Breaking changes
+  - MINOR: New features (backward compatible)
+  - PATCH: Bug fixes
+
+Build Metadata:
+  - Version: 2.1.3
+  - Build: 2.1.3+build.20240115.001
+  - Release: 2.1.3-release-UAT
+```
+
+## **7. Naming Validation Checklist**
+```markdown
+✅ No spaces in any name
+✅ Consistent case usage
+✅ Clear and descriptive
+✅ Follows tool-specific patterns
+✅ Includes version where applicable
+✅ No reserved keywords
+✅ Length < 50 characters
+✅ No special characters
+✅ Environment indicator present
+✅ Type/scope clearly indicated
+```
+
+---
+
+## **Quick Reference Cards**
+
+### **UiPath Quick Reference**
+```
+Workflow: {Process}_{Type}_v{X}
+Variable: scopeTypeDescription
+Argument: direction_typeName
+Selector: App_Element_Action
+Project: Dept_Process_Env
+```
+
+### **Blue Prism Quick Reference**
+```
+Object: BO_App_Function
+Process: PROC_BusinessFlow
+Action: VerbNoun
+Data: typeDescription
+Stage: Purpose_Action
+```
+
+### **Power Automate Quick Reference**
+```
+Flow: Env_Dept_Process_Trigger
+Variable: variables('typeName')
+Connection: Env_Service_Purpose
+Action: Action_Resource
+```
+
+These documents provide comprehensive standards that your GPT can reference when generating automation solutions. You can upload them as PDFs or text files to the Knowledge Base section of your GPT configuration.
